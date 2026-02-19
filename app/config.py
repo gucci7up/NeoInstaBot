@@ -17,8 +17,6 @@ class Config:
         required = [
             "TELEGRAM_BOT_TOKEN",
             "ADMIN_TELEGRAM_ID",
-            "IG_USERNAME",
-            "IG_PASSWORD",
             "DOMAIN"
         ]
         missing = [key for key in required if not getattr(cls, key)]
