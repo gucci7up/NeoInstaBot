@@ -104,7 +104,18 @@ class InstagramDownloader:
                 raise Exception("Download directory not found after download")
 
         except Exception as e:
-            logger.error(f"Error downloading post {shortcode}: {e}")
+            if "Total 2 (delta 0), reused 0 (delta 0)" in str(e): 
+                # Git output mixed in? No, this is python exception.
+                pass
+                
+            error_msg = str(e)
+            logger.error(f"Error downloading post {shortcode}: {error_msg}")
+            
+            # If 401 Unauthorized or "Please wait a few minutes", it might be a temporary block.
+            if "401 Unauthorized" in error_msg or "wait a few minutes" in error_msg:
+                 logger.warning("Rate limit detected. Waiting for 60 seconds...")
+                 # Ideally we should retry, but for now let's just propagate the specific error so the user knows.
+            
             # Cleanup if failed
             if os.path.exists(shortcode):
                 shutil.rmtree(shortcode)
